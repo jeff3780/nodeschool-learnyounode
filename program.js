@@ -1,22 +1,27 @@
 var fs = require('fs');
+var path = require('path');
 
-function countNL() {
-	fs.readFile(process.argv[2], function doneReading(err, fBuff) {
-		if (! err) {
-			var fString = fBuff.toString();
-			var fArr = fString.split('\n');
-			console.log(fArr.length - 1);
+fs.readdir( process.argv[2], function (err, files) { 
+	if (!err) {
+		//console.log(files);
+		for (var i = 0; i < files.length; i++) {
+			if (path.extname(files[i]).slice(1) === process.argv[3]) {
+				console.log(files[i]);
+			}
+			//console.log(files[i], path.extname(files[i]).slice(1));
 		}
-	})
-}
-countNL();
+	}
+	
+});
+//console.log("Fired callback.");
 
 //Official soln:
 /*    var fs = require('fs')
-    var file = process.argv[2]
+    var path = require('path')
 
-    fs.readFile(file, function (err, contents) {
-      // fs.readFile(file, 'utf8', callback) can also be used
-      var lines = contents.toString().split('\n').length - 1
-      console.log(lines)
+    fs.readdir(process.argv[2], function (err, list) {
+      list.forEach(function (file) {
+        if (path.extname(file) === '.' + process.argv[3])
+          console.log(file)
+      })
     }) */
