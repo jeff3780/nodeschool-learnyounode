@@ -1,18 +1,21 @@
-// console.log(process.argv);
-var arglist = process.argv.slice(2, process.argv.length);
-// console.log(arglist);
-var argnums = arglist.map(function(item) {return Number(item);});
-// console.log(argnums);
-var sumargs = 0;
-for (var i = 0; i < arglist.length; i++) {
-	sumargs += argnums[i];
-}
-console.log(sumargs);
+var fs = require('fs');
+//Soln 1:
+var fBuff = fs.readFileSync(process.argv[2]);
+var fString = fBuff.toString();
+var fArr = fString.split('\n');
+console.log(fArr.length - 1);
 
-//Official solution:
-/*var result = 0;
+//Soln 2:
+//console.log(fs.readFileSync(process.argv[2]).toString().split('\n').length - 1);
 
-for (var i = 2; i < process.argv.length; i++)
-  result += Number(process.argv[i]);
+//Official Soln:
+    /*var fs = require('fs')
 
-console.log(result);*/
+    var contents = fs.readFileSync(process.argv[2])
+    var lines = contents.toString().split('\n').length - 1
+    console.log(lines)*/
+
+    // note you can avoid the .toString() by passing 'utf8' as the
+    // second argument to readFileSync, then you'll get a String!
+    //
+    // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1

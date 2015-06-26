@@ -1,0 +1,38 @@
+This is the json that I used for my integration mapping file (I have it in a separate file of course):
+{
+	"TrackingName" : "BizagiJeff",
+	"Timestamp" : "05/29/2015 03:16:30 PM",
+	"Longitude" : -80.15,
+	"Latitude" : 37.05
+}
+
+This is what appears to be POSTed:
+h_action=multiaction&h_actions=%5B%7B%22EsriRestTest.TrackingName%22%3A%22Jeff5%22%2C%22EsriRestTest.UpdateTime%22%3A%2205%2F29%2F2015+00%3A00%3A00%22%2C%22EsriRestTest.DateTimeString%22%3A%225%2F29%2F2015%22%2C%22EsriRestTest.Longitude%22%3A%22-80.15%22%2C%22EsriRestTest.Latitude%22%3A%2237.05%22%2C%22h_action%22%3A%22next%22%2C%22h_pageCacheId%22%3A96896089%2C%22h_tag%22%3A%22performAction%22%7D%5D
+
+Apply URL decoding
+h_action = multiaction & h_actions = [{
+			"EsriRestTest.TrackingName" : "Jeff5",
+			"EsriRestTest.UpdateTime" : "05/29/2015 00:00:00",
+			"EsriRestTest.DateTimeString" : "5/29/2015",
+			"EsriRestTest.Longitude" : "-80.15",
+			"EsriRestTest.Latitude" : "37.05",
+			"h_action" : "next",
+			"h_pageCacheId" : 96896089,
+			"h_tag" : "performAction"
+		}
+	]
+
+	If we remove table name prefix + h_action prefix, and hand post, it will work.
+	[{
+			"TrackingName" : "Jeff5",
+			"UpdateTime" : "05/29/2015 00:00:00",
+			"DateTimeString" : "5/29/2015",
+			"Longitude" : "-80.15",
+			"Latitude" : "37.05",
+			"h_action" : "next",
+			"h_pageCacheId" : 96896089,
+			"h_tag" : "performAction"
+		}
+	]
+
+	
