@@ -1,21 +1,22 @@
 var fs = require('fs');
-//Soln 1:
-var fBuff = fs.readFileSync(process.argv[2]);
-var fString = fBuff.toString();
-var fArr = fString.split('\n');
-console.log(fArr.length - 1);
 
-//Soln 2:
-//console.log(fs.readFileSync(process.argv[2]).toString().split('\n').length - 1);
+function countNL() {
+	fs.readFile(process.argv[2], function doneReading(err, fBuff) {
+		if (! err) {
+			var fString = fBuff.toString();
+			var fArr = fString.split('\n');
+			console.log(fArr.length - 1);
+		}
+	})
+}
+countNL();
 
-//Official Soln:
-    /*var fs = require('fs')
+//Official soln:
+/*    var fs = require('fs')
+    var file = process.argv[2]
 
-    var contents = fs.readFileSync(process.argv[2])
-    var lines = contents.toString().split('\n').length - 1
-    console.log(lines)*/
-
-    // note you can avoid the .toString() by passing 'utf8' as the
-    // second argument to readFileSync, then you'll get a String!
-    //
-    // fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
+    fs.readFile(file, function (err, contents) {
+      // fs.readFile(file, 'utf8', callback) can also be used
+      var lines = contents.toString().split('\n').length - 1
+      console.log(lines)
+    }) */
