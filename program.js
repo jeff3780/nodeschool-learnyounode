@@ -1,50 +1,28 @@
-var mymodule = require('./mymodule');
-mymodule(process.argv[2], process.argv[3], function(err, list) {
-	if (err) return console.log('Error', err);
-	for (var i = 0; i < list.length; i++) {
-		console.log(list[i]);
-	}
-})
+// give credit to: https://github.com/JeffPaine/learnyounode-solutions/blob/master/07_http_client.js 
+var http = require('http');
 
-/*Your solution to MAKE IT MODULAR passed!
+var url = process.argv[2];
+http.get(url, function (res){
+  res.setEncoding('utf8');
+  res.on('data', console.log);
+  res.on('error', console.error);
+});
+
+//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true
+
+/* Your solution to HTTP CLIENT passed!
 
 Here's the official solution in case you want to compare notes:
 
-───────────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────
 
-solution.js:
+    var http = require('http')
 
-    var filterFn = require('./solution_filter.js')
-    var dir = process.argv[2]
-    var filterStr = process.argv[3]
-
-    filterFn(dir, filterStr, function (err, list) {
-      if (err)
-        return console.error('There was an error:', err)
-
-      list.forEach(function (file) {
-        console.log(file)
-      })
+    http.get(process.argv[2], function (response) {
+      response.setEncoding('utf8')
+      response.on('data', console.log)
+      response.on('error', console.error)
     })
 
-───────────────────────────────────────────────────────────────
-
-solution_filter.js:
-
-    var fs = require('fs')
-    var path = require('path')
-
-    module.exports = function (dir, filterStr, callback) {
-
-      fs.readdir(dir, function (err, list) {
-        if (err)
-          return callback(err)
-
-        list = list.filter(function (file) {
-          return path.extname(file) === '.' + filterStr
-        })
-
-        callback(null, list)
-      })
-    }
+─────────────────────────────────────────────────────────────────
 */
