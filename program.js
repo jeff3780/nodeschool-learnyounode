@@ -1,49 +1,89 @@
-var net = require('net');
+var http = require('http');
+var url = require('url');
 
-function zeroFill(i) {
-  return (i < 10 ? '0' : '') + i;
+var port = Number(process.argv[2]);
+
+function formatTime(date) {
+    return {
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+        second: date.getSeconds()
+    };
 }
 
-function now () {
-  var d = new Date();
-  return d.getFullYear() + '-'
-    + zeroFill(d.getMonth() + 1) + '-'
-    + zeroFill(d.getDate()) + ' '
-    + zeroFill(d.getHours()) + ':'
-    + zeroFill(d.getMinutes());
+function fomatUnix(date) {
+    return {
+        unixtime: date.getTime()
+    };
 }
 
-var server = net.createServer(function (socket) {
-  socket.end(now() + '\n');
+function processRequest(urlPath, date) {
+    var result = {};
+    if (urlPath === "/api/parsetime") {
+        result = formatTime(date);
+    } else if (urlPath === "/api/unixtime") {
+        result = fomatUnix(date);
+    }
+    return result;
+}
+
+var server = http.createServer(function (req, res) {
+    if (req.method != 'GET') return res.end('Not a GET request.\n');
+
+    var urlInfos = url.parse(req.url, true);
+    var date = new Date(urlInfos.query.iso);
+    var data = processRequest(urlInfos.pathname, date);
+
+    if (data) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(data));
+    } else {
+        res.writeHead(404);
+        res.end();
+    }
 });
-server.listen(Number(process.argv[2]));
+
+server.listen(port);
 
 /*
-Your solution to TIME SERVER passed!
+Your solution to HTTP JSON API SERVER passed!
 
 Here's the official solution in case you want to compare notes:
 
-──────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────
 
-    var net = require('net')
+    var http = require('http')
+    var url = require('url')
 
-    function zeroFill(i) {
-      return (i < 10 ? '0' : '') + i
+    function parsetime (time) {
+      return {
+        hour: time.getHours(),
+        minute: time.getMinutes(),
+        second: time.getSeconds()
+      }
     }
 
-    function now () {
-      var d = new Date()
-      return d.getFullYear() + '-'
-        + zeroFill(d.getMonth() + 1) + '-'
-        + zeroFill(d.getDate()) + ' '
-        + zeroFill(d.getHours()) + ':'
-        + zeroFill(d.getMinutes())
+    function unixtime (time) {
+      return { unixtime : time.getTime() }
     }
 
-    var server = net.createServer(function (socket) {
-      socket.end(now() + '\n')
+    var server = http.createServer(function (req, res) {
+      var parsedUrl = url.parse(req.url, true)
+      var time = new Date(parsedUrl.query.iso)
+      var result
+
+      if (/^\/api\/parsetime/.test(req.url))
+        result = parsetime(time)
+      else if (/^\/api\/unixtime/.test(req.url))
+        result = unixtime(time)
+
+      if (result) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(result))
+      } else {
+        res.writeHead(404)
+        res.end()
+      }
     })
-
     server.listen(Number(process.argv[2]))
-
 */
