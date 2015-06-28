@@ -1,37 +1,66 @@
-// give credit to: https://github.com/JeffPaine/learnyounode-solutions/blob/master/08_http_collect.js
 var http = require('http');
-var url = process.argv[2];
+var bl = require('bl');
 
-http.get(url, function (res){
-	var data = [];
-	res.setEncoding('utf8');
-	res.on('data', function (r) {
-		data.push(r);
-	});
-	res.on('end', function () {
-		console.log(data.join('').length);
-		console.log(data.join(''));
-	});
-	res.on('error', console.error);
-});
+var results = [];
+var count = 0;
 
-//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true
+function printResults () {
+  for (var i = 0; i < 3; i++)
+    console.log(results[i]);
+}
 
-/*Your solution to HTTP COLLECT passed!
+function httpGet (index) {
+  http.get(process.argv[2 + index], function (response) {
+    response.pipe(bl(function (err, data) {
+      if (err)
+        return console.error(err);
+
+      results[index] = data.toString();
+      count++;
+
+      if (count == 3) // yay! we are the last one!
+        printResults();
+    }))
+  })
+}
+
+for (var i = 0; i < 3; i++)
+  httpGet(i);
+
+//node program http://localhost:6080/arcgis/rest/services/GeoEvent/IncidentDetection/FeatureServer/0/query?where%3D1%253D1%26f%3Djson http://localhost:6080/arcgis/rest/services/GeoEvent/IncidentDetection/FeatureServer/1/query?where%3D1%253D1%26f%3Djson http://localhost:6080/arcgis/rest/services/GeoEvent/IncidentDetection/FeatureServer/2/query?where%3D1%253D1%26f%3Djson
+
+/*
+Your solution to JUGGLING ASYNC passed!
 
 Here's the official solution in case you want to compare notes:
 
-────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────
 
     var http = require('http')
     var bl = require('bl')
+    var results = []
+    var count = 0
 
-    http.get(process.argv[2], function (response) {
-      response.pipe(bl(function (err, data) {
-        if (err)
-          return console.error(err)
-        data = data.toString()
-        console.log(data.length)
-        console.log(data)
-      }))
-    })*/
+    function printResults () {
+      for (var i = 0; i < 3; i++)
+        console.log(results[i])
+    }
+
+    function httpGet (index) {
+      http.get(process.argv[2 + index], function (response) {
+        response.pipe(bl(function (err, data) {
+          if (err)
+            return console.error(err)
+
+          results[index] = data.toString()
+          count++
+
+          if (count == 3)
+            printResults()
+        }))
+      })
+    }
+
+    for (var i = 0; i < 3; i++)
+      httpGet(i)
+  */
